@@ -1,0 +1,125 @@
+{
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "sla-year",
+    "project": "demo"
+  },
+  "spec": {
+    "display": {
+      "name": "SLA year"
+    },
+    "duration": "1y",
+    "refreshInterval": "0s",
+    "variables": [],
+    "panels": {
+      "availability": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "checkout \u00b7 availability, last 12 months",
+            "description": "Year layout: a column per week, the month totals underneath."
+          },
+          "plugin": {
+            "kind": "CalendarHeatmapChart",
+            "spec": {
+              "mode": "availability",
+              "target": 99.9,
+              "warnBelow": 99.95,
+              "layout": "year",
+              "incidents": {
+                "label": "incident",
+                "link": "https://status.example.com/incidents/${incident}"
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg_over_time(demo_sli_availability{service=\"checkout\"}[1h])"
+                  }
+                }
+              }
+            },
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "max_over_time(demo_incident_open{service=\"checkout\"}[1h])"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "deploys": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "checkout \u00b7 deploys per day, last 12 months",
+            "description": "Count mode in the year layout."
+          },
+          "plugin": {
+            "kind": "CalendarHeatmapChart",
+            "spec": {
+              "mode": "count",
+              "reduce": "sum",
+              "colorScale": "success",
+              "layout": "year",
+              "format": {
+                "unit": "decimal",
+                "decimalPlaces": 0
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum_over_time(demo_deploys{service=\"checkout\"}[1h])"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "layouts": [
+      {
+        "kind": "Grid",
+        "spec": {
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 24,
+              "height": 9,
+              "content": {
+                "$ref": "#/spec/panels/availability"
+              }
+            },
+            {
+              "x": 0,
+              "y": 9,
+              "width": 24,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/deploys"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

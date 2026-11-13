@@ -1,0 +1,125 @@
+{
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "sla-calendar",
+    "project": "demo"
+  },
+  "spec": {
+    "display": {
+      "name": "SLA calendar"
+    },
+    "duration": "90d",
+    "refreshInterval": "0s",
+    "variables": [],
+    "panels": {
+      "availability": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "checkout \u00b7 availability",
+            "description": "Green meets the target, amber is close, red is a breach day. Hover a day for its downtime and incidents; click to zoom."
+          },
+          "plugin": {
+            "kind": "CalendarHeatmapChart",
+            "spec": {
+              "mode": "availability",
+              "target": 99.9,
+              "warnBelow": 99.95,
+              "layout": "months",
+              "incidents": {
+                "label": "incident",
+                "link": "https://status.example.com/incidents/${incident}"
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "avg_over_time(demo_sli_availability{service=\"checkout\"}[1h])"
+                  }
+                }
+              }
+            },
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "max_over_time(demo_incident_open{service=\"checkout\"}[1h])"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "deploys": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "checkout \u00b7 deploys per day",
+            "description": "Count mode: one number per day on a five-step scale."
+          },
+          "plugin": {
+            "kind": "CalendarHeatmapChart",
+            "spec": {
+              "mode": "count",
+              "reduce": "sum",
+              "colorScale": "info",
+              "layout": "months",
+              "format": {
+                "unit": "decimal",
+                "decimalPlaces": 0
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum_over_time(demo_deploys{service=\"checkout\"}[1h])"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "layouts": [
+      {
+        "kind": "Grid",
+        "spec": {
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 24,
+              "height": 11,
+              "content": {
+                "$ref": "#/spec/panels/availability"
+              }
+            },
+            {
+              "x": 0,
+              "y": 11,
+              "width": 24,
+              "height": 10,
+              "content": {
+                "$ref": "#/spec/panels/deploys"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

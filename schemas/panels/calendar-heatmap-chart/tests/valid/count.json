@@ -1,0 +1,9 @@
+{
+  "kind": "CalendarHeatmapChart",
+  "spec": {
+    "mode": "count",
+    "reduce": "max",
+    "colorScale": "info",
+    "format": { "unit": "decimal", "decimalPlaces": 0 }
+  }
+}

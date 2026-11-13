@@ -1,0 +1,32 @@
+# A local Perses with the plugin, and a Prometheus that starts with a year of made-up SLA history
+# (backfilled with promtool on first start). Works with `podman compose` and `docker compose`; see
+# the README.
+name: perses-plugin-calendarheatmap
+
+services:
+  prometheus:
+    image: docker.io/prom/prometheus:v3.5.0
+    entrypoint: ["/bin/sh", "/dev-ch/start-prometheus.sh"]
+    environment:
+      HISTORY_DAYS: "${HISTORY_DAYS:-400}"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro,z
+      - ./start-prometheus.sh:/dev-ch/start-prometheus.sh:ro,z
+      - ./history.awk:/dev-ch/history.awk:ro,z
+      - prometheus-data:/prometheus
+
+  perses:
+    image: docker.io/persesdev/perses:v0.55.1
+    command: ["--config", "/etc/perses/config.yaml"]
+    ports:
+      - "127.0.0.1:${PERSES_PORT:-18085}:8080"
+    volumes:
+      - ./perses.yaml:/etc/perses/config.yaml:ro,z
+      - ./provisioning:/etc/perses/provisioning:ro,z
+      - ./dashboards:/etc/perses/dashboards:ro,z
+      # Holds CalendarHeatmap-<version>.tar.gz from `percli plugin build`.
+      - ./archive:/etc/perses/plugins-archive-calendarheatmap:ro,z
+    depends_on: [prometheus]
+
+volumes:
+  prometheus-data:

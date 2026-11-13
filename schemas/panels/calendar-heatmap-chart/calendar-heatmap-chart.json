@@ -1,20 +1,10 @@
 {
   "kind": "CalendarHeatmapChart",
   "spec": {
-    "legend": {
-      "position": "bottom"
-    },
-    "thresholds": {
-      "steps": [
-        {
-          "value": 0.6,
-          "name": "Alert: Warning condition example"
-        },
-        {
-          "value": 0.8,
-          "name": "Alert: Critical condition example"
-        }
-      ]
-    }
+    "mode": "availability",
+    "target": 99.9,
+    "warnBelow": 99.95,
+    "layout": "months",
+    "weekStart": "monday"
   }
 }

@@ -1,0 +1,17 @@
+{
+  "kind": "CalendarHeatmapChart",
+  "spec": {
+    "mode": "availability",
+    "valueType": "errorRatio",
+    "target": 99.5,
+    "warnBelow": 99.9,
+    "layout": "year",
+    "weekStart": "sunday",
+    "timezone": "Europe/Berlin",
+    "dayLink": "/projects/demo/dashboards/detail?start=${from}&end=${to}",
+    "incidents": {
+      "label": "incident",
+      "link": "https://status.example.com/incidents/${incident}"
+    }
+  }
+}

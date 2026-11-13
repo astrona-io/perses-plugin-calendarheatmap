@@ -7,7 +7,7 @@ You are a senior TypeScript/React (and, where needed, Go/CUE) engineer and Perse
 **Repo:** `astrona-io/perses-plugin-calendarheatmap`
 **Plugin kind(s):** Panel: `CalendarHeatmapChart`
 **Focus area:** SLA
-**Concept page:** https://claude.ai/artifact/KcToRbDWESkuMgDtPBrBvE#calendarheatmap (a private page; the owner can share it with you. Everything you need from it is in this prompt and in `docs/mockup.png`.)
+**Concept:** Everything you need from it is in this prompt and in `docs/mockup.png`.
 
 ## What it should look like
 See `docs/mockup.png` in the repo. If it isn't there, ask for it. It's a concept sketch: match the idea and information density, not the exact pixels.
